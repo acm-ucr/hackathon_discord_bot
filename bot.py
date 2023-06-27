@@ -11,7 +11,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
-    print("Bot is Ready!")
+    print("Bot is Ready and Running!")
 
 
 if __name__ == '__main__':

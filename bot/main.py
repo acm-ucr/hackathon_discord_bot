@@ -14,5 +14,9 @@ async def on_ready():
     print("Bot is Ready and Running!")
 
 
-if __name__ == '__main__':
+def main():
     bot.run(TOKEN)
+
+
+if __name__ == '__main__':
+    main()

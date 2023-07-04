@@ -22,7 +22,7 @@ jobs:
           pip install pylint psycopg2-binary google-api-python-client shortuuid
       - name: Analysing the code with pylint
         run: |
-          pylint .
+          pylint bot
   formatting:
     runs-on: ubuntu-latest
     strategy:

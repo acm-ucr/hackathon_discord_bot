@@ -1,37 +1,41 @@
+"""Discord bot to handle hackathon server managment"""
 import os
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-from discord import app_commands
-from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 RoleList = {
-            "🤖":"Hacker",
+    "🤖": "Hacker",
 }
+
 
 @bot.event
 async def on_ready():
+    """run once when bot starts"""
     try:
         await bot.tree.sync()
-    except Exception as e:
-        print(e)
+    except RuntimeError as err:
+        print(err)
 
 
-@bot.tree.command(name="sendRoleAssignmnent")
-async def sendRoleAssignmnent ( ctx: discord.Interaction) :
-    channel = await bot.fetch_channel(os.getenv('CHANNEL_ID'))
-    text= "please react to the emoji to get your role\n"
-    for i in RoleList:
-        text+=f"{RoleList[i]} : {i}\n"
-    Moji = await channel.send(text)
-    for i in RoleList:
-        await Moji.add_reaction(i)
-        
+@bot.tree.command(name="roles")
+async def send_role_assignmnent(ctx: discord.Interaction):
+    """send the roll assinment message"""
+    text = "please react to the emoji to get your role\n"
+    for emoji, role in RoleList.items():
+        text += f"{role} : {emoji}\n"
+    message = await ctx.channel.send(text)
+    for emoji in RoleList:
+        await message.add_reaction(emoji)
+
+
 @bot.event
 async def on_reaction_add(reaction, user):
+    """assign user roles based on their reaction to the role assignment message"""
     channel = await bot.fetch_channel(os.getenv('CHANNEL_ID'))
     if reaction.message.channel.id != channel.id:
         return
@@ -39,9 +43,10 @@ async def on_reaction_add(reaction, user):
         server = await bot.fetch_guild(os.getenv("SERVER_ID"))
         role = discord.utils.get(server.roles, name=RoleList[reaction.emoji])
         await user.add_roles(role)
-    
+
 
 def main():
+    "main function"
     bot.run(TOKEN)
 
 

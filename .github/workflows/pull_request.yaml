@@ -19,10 +19,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pylint psycopg2-binary google-api-python-client shortuuid
+          # pip install pylint psycopg2-binary google-api-python-client shortuuid
+          pip install poetry
+          poetry install
       - name: Analysing the code with pylint
         run: |
-          pylint bot
+          poetry run pylint bot
   formatting:
     runs-on: ubuntu-latest
     strategy:

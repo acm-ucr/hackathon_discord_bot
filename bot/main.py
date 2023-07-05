@@ -1,8 +1,14 @@
+"""
+Discord Bot
+
+Interacts with the Discord API and fetches events from Google Calendar.
+"""
+
 import datetime as dt
 import os.path
 import os
-import discord
 import asyncio
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from pytz import timezone
@@ -23,11 +29,17 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 # Function to send a message to a Discord channel
 async def send_message_to_discord(message):
+    """
+    Echo to bot-testing channel
+    """
     channel = bot.get_channel(1124440964031852717)
     await channel.send(message)
 
 
-async def fetchEvents():
+async def fetch_events():
+    """
+    gets events from google calender
+    """
     print("Fetching events...")
     # Auth stuff
     creds = None
@@ -40,7 +52,7 @@ async def fetchEvents():
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
+        with open('token.json', 'w', encoding='utf-8') as token:
             token.write(creds.to_json())
 
     try:
@@ -86,11 +98,17 @@ async def fetchEvents():
 
 @bot.event
 async def on_ready():
+    """
+    what bot does on call
+    """
     print("Bot is Ready and Running!")
-    await fetchEvents()
+    await fetch_events()
 
 
 async def main():
+    """
+    main
+    """
     await bot.start(TOKEN)
 
 

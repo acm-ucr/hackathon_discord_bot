@@ -10,8 +10,8 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-
 setup_role_assignment(bot)
+
 
 @bot.event
 async def on_ready():
@@ -20,6 +20,7 @@ async def on_ready():
         await bot.tree.sync()
     except RuntimeError as err:
         print(err)
+
 
 def main():
     "main function"

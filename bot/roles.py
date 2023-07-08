@@ -5,11 +5,7 @@ import discord
 
 load_dotenv()
 
-ROLES_LIST = {
-    "💻": "Hacker",
-    "📞": "Volunteer",
-    "🧠": "Mentor"
-}
+ROLES_LIST = {"💻": "Hacker", "📞": "Volunteer", "🧠": "Mentor"}
 
 
 class Roles:
@@ -23,7 +19,8 @@ class Roles:
         self.bot = bot
         self.server: str = os.getenv("DISCORD_SERVER_ID")
         self.role_channel: str = os.getenv('DISCORD_ROLE_CHANNEL_ID')
-        self.verification_channel: str = os.getenv('DISCORD_VERIFICATION_CHANNEL_ID')
+        self.verification_channel: str = os.getenv(
+            'DISCORD_VERIFICATION_CHANNEL_ID')
 
     async def send_role_assignment(self, ctx: discord.Interaction):
         """send the roll assinment message"""
@@ -53,7 +50,9 @@ class Roles:
                 server: discord.Guild = await self.bot.fetch_guild(self.server)
                 role: discord.Role = discord.utils.get(
                     server.roles, name=ROLES_LIST[reaction.emoji])
-                message: discord.Message = await verification_channel.send(f"{user.mention} is requesting access to the following role: {reaction.emoji} {role.mention}")
+                message: discord.Message = await verification_channel.send(
+                    f"""{user.mention} is requesting access 
+                    to the following role: {reaction.emoji} {role.mention}""")
                 await message.add_reaction("✅")
                 await message.add_reaction("❌")
         if reaction.message.channel.id == verification_channel.id:

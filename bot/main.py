@@ -8,8 +8,7 @@ from .roles import Roles
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-bot: discord.Client = Bot(command_prefix="!",
-                                   intents=discord.Intents.all())
+bot: discord.Client = Bot(command_prefix="!", intents=discord.Intents.all())
 
 roles = Roles(bot)
 

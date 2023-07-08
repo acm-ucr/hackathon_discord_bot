@@ -16,14 +16,14 @@ roles = Roles(bot)
 
 @bot.tree.command(name="roles")
 async def send_role_assignment(ctx: discord.Interaction):
-    """Send role assignment to text channel"""
+    """Send Role Assignments"""
     async with ctx.channel.typing():
         await roles.send_role_assignment(ctx)
 
 
 @bot.event
 async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
-    """Add role assignment based on reaction"""
+    """Add Reaction Based Role"""
     await roles.on_reaction_add(reaction, user)
 
 

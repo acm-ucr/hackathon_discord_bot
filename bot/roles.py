@@ -11,7 +11,11 @@ ROLES_LIST = {
 
 
 class Roles:
-    """Class to handle all role based management including role assignment for hackers, volunteers, and mentors"""
+    """
+    Class to handle all role based management 
+    including role assignment for hackers, volunteers, 
+    and mentors
+    """
 
     def __init__(self, bot):
         self.bot = bot

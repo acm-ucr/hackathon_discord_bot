@@ -17,7 +17,8 @@ roles = Roles(bot)
 @bot.tree.command(name="roles")
 async def send_role_assignment(ctx: discord.Interaction):
     """Send role assignment to text channel"""
-    await roles.send_role_assignment(ctx)
+    async with ctx.channel.typing():
+        await roles.send_role_assignment(ctx)
 
 
 @bot.event

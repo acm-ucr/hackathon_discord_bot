@@ -41,15 +41,12 @@ class Roles:
         verification_channel: discord.TextChannel = await self.bot.fetch_channel(
             self.verification_channel)
         if reaction.message.channel.id == role_channel.id:
+            server: discord.Guild = await self.bot.fetch_guild(self.server)
+            role: discord.Role = discord.utils.get(
+                server.roles, name=ROLES_LIST[reaction.emoji])
             if ROLES_LIST[reaction.emoji] == "Hacker":
-                server: discord.Guild = await self.bot.fetch_guild(self.server)
-                role: discord.Role = discord.utils.get(
-                    server.roles, name=ROLES_LIST[reaction.emoji])
                 await user.add_roles(role)
             if ROLES_LIST[reaction.emoji] in ["Volunteer", "Mentor"]:
-                server: discord.Guild = await self.bot.fetch_guild(self.server)
-                role: discord.Role = discord.utils.get(
-                    server.roles, name=ROLES_LIST[reaction.emoji])
                 message: discord.Message = await verification_channel.send(
                     f"""{user.mention} is requesting access 
                     to the following role: {reaction.emoji} {role.mention}""")

@@ -2,19 +2,20 @@
 import os
 from dotenv import load_dotenv
 import discord
-from discord.ext import commands
+from discord.ext.commands import Bot, has_permissions
 from .roles import Roles
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-bot: discord.Client = commands.Bot(command_prefix="!",
+bot: discord.Client = Bot(command_prefix="!",
                                    intents=discord.Intents.all())
 
 roles = Roles(bot)
 
 
 @bot.tree.command(name="roles")
+@has_permissions(administrator=True)
 async def send_role_assignment(ctx: discord.Interaction):
     """Send Role Assignments"""
     async with ctx.channel.typing():

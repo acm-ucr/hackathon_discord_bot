@@ -5,32 +5,31 @@ import discord
 
 load_dotenv()
 
-roleList = {
+ROLES_LIST = {
     "🤖": "Hacker",
 }
 
-
-def setup_role_assignment(bot):
-    """add commands to the bot"""
-
-    @bot.tree.command(name="roles")
-    async def send_role_assignmnent(ctx: discord.Interaction):
+class Roles:
+    def __init__(self, bot):
+        self.bot = bot
+        self.server: str = os.getenv("DISCORD_SERVER_ID")
+        self.channel: str = os.getenv('DISCORD_CHANNEL_ID')
+    
+    async def send_role_assignment(self, ctx: discord.Interaction):
         """send the roll assinment message"""
-        text = "please react to the emoji to get your role\n"
-        for emoji, role in roleList.items():
+        text: str = "please react to the emoji to get your role\n"
+        for emoji, role in ROLES_LIST.items():
             text += f"{role} : {emoji}\n"
-        message = await ctx.channel.send(text)
-        for emoji in roleList:
+        message: discord.Message = await ctx.channel.send(text)
+        for emoji in ROLES_LIST:
             await message.add_reaction(emoji)
 
-    @bot.event
-    async def on_reaction_add(reaction, user):
+    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.Member):
         """assign user roles based on their reaction to the role assignment message"""
-        channel = await bot.fetch_channel(os.getenv('CHANNEL_ID'))
-        if reaction.message.channel.id != channel.id:
-            return
-        if reaction.emoji in roleList:
-            server = await bot.fetch_guild(os.getenv("SERVER_ID"))
-            role = discord.utils.get(server.roles,
-                                     name=roleList[reaction.emoji])
-            await user.add_roles(role)
+        channel: discord.TextChannel = await self.bot.fetch_channel(self.channel)
+        if reaction.message.channel.id == channel.id:
+            if reaction.emoji in ROLES_LIST:
+                server: discord.Guild = await self.bot.fetch_guild(self.server)
+                role: discord.Role = discord.utils.get(server.roles,
+                                        name=ROLES_LIST[reaction.emoji])
+                await user.add_roles(role)

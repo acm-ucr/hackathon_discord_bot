@@ -3,15 +3,22 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-from .roles import setup_role_assignment
+from .roles import Roles
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+bot: discord.Client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-setup_role_assignment(bot)
+roles = Roles(bot)
 
+@bot.tree.command(name="roles")
+async def send_role_assignment(ctx: discord.Interaction):
+    await roles.send_role_assignment(ctx)
+
+@bot.event
+async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
+    await roles.on_reaction_add(reaction, user)
 
 @bot.event
 async def on_ready():
@@ -25,7 +32,3 @@ async def on_ready():
 def main():
     "main function"
     bot.run(TOKEN)
-
-
-if __name__ == '__main__':
-    main()

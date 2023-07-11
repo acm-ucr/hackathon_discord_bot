@@ -4,15 +4,16 @@ Discord Bot
 Interacts with the Discord API and fetches events from Google Calendar.
 """
 
-from .roles import Roles
-from .scheduler import fetch_events
 import os.path
 import os
 import asyncio
 import discord
-from discord.ext import commands
+# from discord.ext import commands
 from discord.ext.commands import Bot, has_permissions
 from dotenv import load_dotenv
+
+from .roles import Roles
+from .scheduler import fetch_events
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')

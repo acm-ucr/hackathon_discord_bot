@@ -1,16 +1,13 @@
+"""Send out announcements 10 mins before and right before event starts on google calender"""
+
 import datetime as dt
-import discord
+import asyncio
+import os
+import os.path
 from dotenv import load_dotenv
 from pytz import timezone
-import requests
-import os.path
-import os
 import aiohttp
-import json
 import dateutil.parser
-from discord.ext import commands
-from discord.ext.commands import Bot, has_permissions
-import asyncio
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -58,7 +55,7 @@ async def fetch_events(bot):
                 event_location = event.get('location', 'No location')
                 event_description = event.get('description', 'No description')
 
-                # Convert the start time to the desired timezone
+                # Convert the start time to Pacific standard time
                 pst_timezone = timezone('PST8PDT')
                 event_start_time_pst = dt.datetime.fromisoformat(
                     event_start_time).astimezone(pst_timezone)
@@ -66,7 +63,10 @@ async def fetch_events(bot):
                 # Format the time in PST without the date
                 event_start_time_formatted = event_start_time_pst.strftime(
                     '%I:%M %p')
-                message = f"**{event_name}** ({event_start_time_formatted}) in **10 minutes** at **{event_location}**!\n\n{event_description}"
+                message = (
+                    f"**{event_name}** ({event_start_time_formatted}) in "
+                    f"**10 minutes** at **{event_location}**!\n\n{event_description}"
+                )
                 print(message)
                 print()
 
@@ -79,14 +79,18 @@ async def fetch_events(bot):
                 time_difference = (event_start_time -
                                    current_time).total_seconds()
                 print(time_difference)
-                channel = bot.get_channel(1124440964031852717)
+                channel = bot.get_channel(
+                    CHANNEL_ID)  #only works with hard coded channel_id
                 await asyncio.sleep(max(time_difference - 600, 0))
                 print(message)
                 if time_difference <= 600:
                     print("10 min before event:", time_difference)
                 await channel.send(message)
 
-                message = f"**{event_name}** ({event_start_time_formatted}) is **starting now** at **{event_location}**!\n\n{event_description}"
+                message = (
+                    f"**{event_name}** ({event_start_time_formatted})"
+                    f"**starting now** at **{event_location}**!\n\n{event_description}"
+                )
                 current_time = dt.datetime.now(timezone('PST8PDT'))
                 time_difference = (event_start_time -
                                    current_time).total_seconds()

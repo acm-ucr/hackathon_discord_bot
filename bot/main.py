@@ -4,7 +4,8 @@ Discord Bot
 Interacts with the Discord API and fetches events from Google Calendar.
 """
 
-
+from .roles import Roles
+from .scheduler import fetch_events
 import os.path
 import os
 import asyncio
@@ -16,11 +17,9 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-# from .roles import Roles/
-from roles import Roles
+# from .roles import Roles
 
 # from .scheduler import fetch_events
-from scheduler import fetch_events
 
 bot: discord.Client = Bot(command_prefix="!", intents=discord.Intents.all())
 
@@ -41,19 +40,8 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
     await roles.on_reaction_add(reaction, user)
 
 
-# Function to send a message to a Discord channel
-async def send_message_to_discord(message):
-    """
-    Echo to bot-testing channel
-    """
-    channel = bot.get_channel(1124440964031852717)
-    await channel.send(message)
-
 @bot.event
 async def on_ready():
-    """
-    what bot does on call
-    """
     """Run when the bot initially loads"""
     try:
         await bot.tree.sync()
@@ -69,5 +57,5 @@ async def main():
     await bot.start(TOKEN)
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+# if __name__ == '__main__': (this causes " coroutine 'main' was never awaited" runtime error)
+asyncio.run(main())

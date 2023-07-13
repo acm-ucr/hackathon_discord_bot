@@ -2,16 +2,21 @@
 
 import os
 import os.path
+import asyncio
+from datetime import datetime
 from dotenv import load_dotenv
 import requests
-from datetime import datetime
 import pytz
-import asyncio
 from dateutil import parser
 import discord
 
 
 class Scheduler:
+    """
+    Scheduler class which handles event reminders 
+    approximately 10 minutes before the event
+    and right as the event starts. Handles multiple parallel events. 
+    """
 
     def __init__(self, bot):
         self.bot = bot
@@ -21,16 +26,15 @@ class Scheduler:
         self.event_channel = os.getenv('DISCORD_EVENTS_CHANNEL_ID')
 
     def _get_current_time(self, iso: bool = False):
-        if iso == True:
+        if iso is True:
             return datetime.now(pytz.timezone('US/Pacific')).isoformat()
-        else:
-            return datetime.now(pytz.timezone('US/Pacific'))
+        return datetime.now(pytz.timezone('US/Pacific'))
 
     def _get_next_event(self) -> list:
         current_time_str: str = self._get_current_time(iso=True)
         query_params: str = f"singleEvents=true&orderBy=startTime&timeMin={current_time_str}&maxResults=10"
         url: str = f"https://www.googleapis.com/calendar/v3/calendars/{self.google_calendar_id}/events?key={self.google_calendar_api_key}&{query_params}"
-        response: list = requests.get(url).json()["items"]
+        response: list = requests.get(url, timeout=5).json()["items"]
 
         # Filter events that are currently happening
         response: list = [
@@ -49,6 +53,7 @@ class Scheduler:
         return events
 
     async def send_reminders(self) -> None:
+        """Main driver to send reminders on Discord Channels"""
         events: list = self._get_next_event()
         events: list = self._compute_delta(events)
 

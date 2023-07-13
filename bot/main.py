@@ -6,9 +6,9 @@ Interacts with the Discord API and fetches events from Google Calendar.
 
 import os.path
 import os
+from dotenv import load_dotenv
 import discord
 from discord.ext.commands import Bot, has_permissions
-from dotenv import load_dotenv
 from .roles import Roles
 from .scheduler import Scheduler
 

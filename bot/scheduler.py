@@ -1,98 +1,70 @@
 """Send out announcements 10 mins before and right before event starts on google calender"""
 
-import datetime as dt
-import asyncio
 import os
 import os.path
 from dotenv import load_dotenv
-from pytz import timezone
-import aiohttp
-import dateutil.parser
-
-load_dotenv()
-TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-API_KEY = os.getenv('GOOGLE_CALENDAR_API_KEY')
-EMAIL = os.getenv('GOOGLE_CALENDAR_EMAIL')
-CHANNEL_ID = os.getenv('DISCORD_ROLE_CHANNEL_ID')
+import requests
+from datetime import datetime
+import pytz
+import asyncio
+from dateutil import parser
+import discord
 
 
-async def fetch_events(bot):
-    """gets events from google calender and echo to discord"""
+class Scheduler:
 
-    print("Fetching events...")
-    url = f"https://www.googleapis.com/calendar/v3/calendars/{EMAIL}/events?key={API_KEY}"
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            if response.status != 200:
-                print("Error occurred while fetching events:", response.status)
-                return
+    def __init__(self, bot):
+        self.bot = bot
+        load_dotenv()
+        self.google_calendar_api_key = os.getenv('GOOGLE_CALENDAR_API_KEY')
+        self.google_calendar_id = os.getenv('GOOGLE_CALENDAR_EMAIL')
+        self.event_channel = os.getenv('DISCORD_EVENTS_CHANNEL_ID')
 
-            data = await response.json()
+    def _get_current_time(self, iso: bool = False):
+        if iso == True:
+            return datetime.now(pytz.timezone('US/Pacific')).isoformat()
+        else:
+            return datetime.now(pytz.timezone('US/Pacific'))
 
-            events = data.get('items', [])
-            if not events:
-                print('No events found in calendar.')
-                return
+    def _get_next_event(self) -> list:
+        current_time_str: str = self._get_current_time(iso=True)
+        query_params: str = f"singleEvents=true&orderBy=startTime&timeMin={current_time_str}&maxResults=10"
+        url: str = f"https://www.googleapis.com/calendar/v3/calendars/{self.google_calendar_id}/events?key={self.google_calendar_api_key}&{query_params}"
+        response: list = requests.get(url).json()["items"]
 
-            current_time = dt.datetime.now()
-            future_events = []
-            print("Number of events:", len(events))
-            for event in events:
-                start_time = dt.datetime.fromisoformat(event['start'].get(
-                    'dateTime', event['start'].get('date')))
-                current_time = current_time.astimezone(start_time.tzinfo)
-                if start_time > current_time:
-                    future_events.append(event)
+        # Filter events that are currently happening
+        response: list = [
+            event for event in response
+            if (parser.parse(event["start"]["dateTime"]) -
+                self._get_current_time()).total_seconds() > 0
+        ]
+        return response
 
-            if not future_events:
-                print('No upcoming future events found.')
-                return
+    def _compute_delta(self, events) -> int:
+        for event in events:
+            event_date: datetime = parser.parse(event["start"]["dateTime"])
+            current_time: datetime = self._get_current_time()
+            delta: int = int((event_date - current_time).total_seconds())
+            event["delta"]: int = delta
+        return events
 
-            for event in future_events:
-                event_name = event['summary']
-                event_start_time = event['start']['dateTime']
-                event_start_time_str = event['start']['dateTime']
-                event_location = event.get('location', 'No location')
-                event_description = event.get('description', 'No description')
+    async def send_reminders(self) -> None:
+        events: list = self._get_next_event()
+        events: list = self._compute_delta(events)
 
-                # Convert the start time to Pacific standard time
-                pst_timezone = timezone('PST8PDT')
-                event_start_time_pst = dt.datetime.fromisoformat(
-                    event_start_time).astimezone(pst_timezone)
+        sleep_time: int = 3600
 
-                # Format the time in PST without the date
-                event_start_time_formatted = event_start_time_pst.strftime(
-                    '%I:%M %p')
-                message = (
-                    f"**{event_name}** ({event_start_time_formatted}) in "
-                    f"**10 minutes** at **{event_location}**!\n\n{event_description}"
-                )
-                print(message)
-                print()
+        for event in events:
+            channel: discord.TextChannel = await self.bot.fetch_channel(
+                self.event_channel)
+            if event["delta"] < 60:
+                await channel.send("EVENT HAPPENING NOW")
+            elif event["delta"] < 600:
+                minutes: int = round(event["delta"] / 60)
+                print(minutes, type(minutes))
+                await channel.send(f"{minutes} MINUTE REMINDER")
+            else:
+                sleep_time: int = event["delta"] - 600
+                break
 
-                # Convert the event_start_time_str to a datetime object
-                event_start_time = dateutil.parser.isoparse(
-                    event_start_time_str)
-                current_time = dt.datetime.now(timezone('PST8PDT'))
-                print(event_start_time)
-                print(current_time)
-                time_difference = (event_start_time -
-                                   current_time).total_seconds()
-                print(time_difference)
-                channel = bot.get_channel(
-                    CHANNEL_ID)  #only works with hard coded channel_id
-                await asyncio.sleep(max(time_difference - 600, 0))
-                print(message)
-                if time_difference <= 600:
-                    print("10 min before event:", time_difference)
-                await channel.send(message)
-
-                message = (
-                    f"**{event_name}** ({event_start_time_formatted})"
-                    f"**starting now** at **{event_location}**!\n\n{event_description}"
-                )
-                current_time = dt.datetime.now(timezone('PST8PDT'))
-                time_difference = (event_start_time -
-                                   current_time).total_seconds()
-                await asyncio.sleep(time_difference)
-                await channel.send(message)
+        await asyncio.sleep(sleep_time)

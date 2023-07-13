@@ -6,25 +6,19 @@ Interacts with the Discord API and fetches events from Google Calendar.
 
 import os.path
 import os
-import asyncio
 import discord
-# from discord.ext import commands
 from discord.ext.commands import Bot, has_permissions
 from dotenv import load_dotenv
-
 from .roles import Roles
-from .scheduler import fetch_events
+from .scheduler import Scheduler
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-# from .roles import Roles
-
-# from .scheduler import fetch_events
-
 bot: discord.Client = Bot(command_prefix="!", intents=discord.Intents.all())
 
 roles = Roles(bot)
+scheduler = Scheduler(bot)
 
 
 @bot.tree.command(name="roles")
@@ -45,18 +39,16 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
 async def on_ready():
     """Run when the bot initially loads"""
     try:
-        await bot.tree.sync()
+        # await bot.tree.sync()
+        print("bot is ready")
+        while True:
+            await scheduler.send_reminders()
     except RuntimeError as err:
         print(err)
-    await fetch_events(bot)
 
 
-async def main():
+def main():
     """
     main
     """
-    await bot.start(TOKEN)
-
-
-# if __name__ == '__main__': (this causes " coroutine 'main' was never awaited" runtime error)
-asyncio.run(main())
+    bot.run(TOKEN)

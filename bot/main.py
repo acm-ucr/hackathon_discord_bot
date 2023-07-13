@@ -1,9 +1,16 @@
-"""Discord bot to handle hackathon server managment"""
+"""
+Discord Bot
+
+Interacts with the Discord API and fetches events from Google Calendar.
+"""
+
+import os.path
 import os
 from dotenv import load_dotenv
 import discord
 from discord.ext.commands import Bot, has_permissions
 from .roles import Roles
+from .scheduler import Scheduler
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -11,6 +18,7 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 bot: discord.Client = Bot(command_prefix="!", intents=discord.Intents.all())
 
 roles = Roles(bot)
+scheduler = Scheduler(bot)
 
 
 @bot.tree.command(name="roles")
@@ -31,11 +39,16 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
 async def on_ready():
     """Run when the bot initially loads"""
     try:
-        await bot.tree.sync()
+        # await bot.tree.sync()
+        print("bot is ready")
+        while True:
+            await scheduler.send_reminders()
     except RuntimeError as err:
         print(err)
 
 
 def main():
-    "Entry point for bot"
+    """
+    main
+    """
     bot.run(TOKEN)

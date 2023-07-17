@@ -21,7 +21,7 @@ class Mentor:
             self.mentee_channel)
         if str(ctx.channel.id) != self.mentee_channel:
             await ctx.response.send_message(
-                f"please send your request in {mentee_channel.mention} channel",
+                f"Please send your request in {mentee_channel.mention} channel",
                 ephemeral=True)
             return
         mentor_text: str = f"""{ctx.user.mention} needs assistance! Please react with a 🤚 if you are available!\n

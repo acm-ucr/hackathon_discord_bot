@@ -16,10 +16,12 @@ class Mentor:
 
     async def on_request_send(self, ctx: Interaction, location: str, tech: str,
                               other: str):
-        """Command when a hacker requests for a mentor"""
+        """command when hacker request for a mentor"""
+        mentee_channel: TextChannel = await self.bot.fetch_channel(
+            self.mentee_channel)
         if str(ctx.channel.id) != self.mentee_channel:
             await ctx.response.send_message(
-                "Please send your request in the 'mentor-help' channel",
+                f"Please send your request in {mentee_channel.mention} channel",
                 ephemeral=True)
             return
         mentor_text: str = f"""{ctx.user.mention} needs assistance! Please react with a 🤚 if you are available!\n
@@ -36,23 +38,19 @@ class Mentor:
             self.mentor_channel)
         message: Message = await mentor_channel.send(mentor_text)
         await message.add_reaction("🤚")
-        await ctx.response.send_message(mentee_text)
+        await ctx.response.send_message(mentee_text, ephemeral=True)
         return
 
     async def on_reaction_add(self, reaction: Reaction, user: Member):
-        """Send a message to mentee when a mentor reacts on their request"""
-        mentee_channel: TextChannel = await self.bot.fetch_channel(
-            self.mentee_channel)
-        mentor_channel: TextChannel = await self.bot.fetch_channel(
-            self.mentor_channel)
+        """Send a message to the mentee when a mentor reacts on their request"""
         if reaction.emoji == "🤚":
             mentee_text: str = f"""{user.mention} has accepted your request! They are on their way to help you!\n
             If they do not come within 10 minutes you can try to contact them on Discord or send another request!"""
             mentor_text: str = f"""{user.mention}, you have accepted {reaction.message.mentions[0].mention}'s request!\n
             Please react with a ✅ when you resolve the issue"""
-            await mentee_channel.send(mentee_text)
-            mentor_message: Message = await mentor_channel.send(mentor_text)
+            await reaction.message.mentions[0].send(mentee_text)
+            mentor_message: Message = await user.send(mentor_text)
             await mentor_message.add_reaction("✅")
         elif reaction.emoji == "✅":
             mentee_text: str = f"{user.mention} has resolved your issue! If your issue is not solved, please send another request!"
-            await mentee_channel.send(mentee_text)
+            await reaction.message.mentions[0].send(mentee_text)

@@ -17,9 +17,8 @@ class Mentor:
 
     async def on_request_send(self, ctx: discord.Interaction, location: str,
                               tech: str, other: str):
-        mentee_channel: TextChannel = await self.bot.fetch_channel(
-            self.mentee_channel)
         """command when hacker request for a mentor"""
+        mentee_channel: TextChannel = await self.bot.fetch_channel(self.mentee_channel)
         if str(ctx.channel.id) != self.mentee_channel:
             await ctx.response.send_message(
                 f"please send your request in {mentee_channel.mention} channel",
@@ -37,10 +36,6 @@ class Mentor:
     async def on_reaction_add(self, reaction: discord.Reaction,
                               user: discord.Member):
         """send a message to mentee when a mentor react on their request"""
-        mentee_channel: TextChannel = await self.bot.fetch_channel(
-            self.mentee_channel)
-        mentor_channel: TextChannel = await self.bot.fetch_channel(
-            self.mentor_channel)
         if reaction.emoji == "🤚":
             mentee_text = f"Hi,  {reaction.message.mentions[0].mention}, {user.mention} has accepted your request, they are on their way to help you! If they do not come in 10 mins you can try contact the on discord or send another request"
             mentor_text = f"{user.mention}, you have accepted {reaction.message.mentions[0].mention} 's request, react ✅ when you resolve the issues"

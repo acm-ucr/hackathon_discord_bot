@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv
 import discord
+from discord import TextChannel
 
 load_dotenv()
 
@@ -14,25 +15,24 @@ class Mentor:
         self.mentor_channel = os.getenv("DISCORD_MENTOR_CHANNEL_ID")
         self.mentee_channel = os.getenv("DISCORD_MENTEE_CHANNEL_ID")
 
-    async def on_request_send(self, ctx: discord.Interaction, location, tech,
-                              other):
+    async def on_request_send(self, ctx: discord.Interaction, location:str, tech:str, other:str):
         """command when hacker request for a mentor"""
+        if str(ctx.channel.id)!=self.mentee_channel:
+             await ctx.response.send_message("please send your request in mentee channel",ephemeral=True)
+             return
         mentor_text = f"{ctx.user.mention} needs help with {tech} please react 🤚 if you can \nlocation: {location}\n{ ''if other=='' else f'additional notes:{other}'}"
         mentee_text = f"{ctx.user.mention}, you requested help with {tech} \nlocation: {location}\n{ ''if other=='' else f'additional notes:{other}'}"
-        mentee_channel: discord.TextChannel = await self.bot.fetch_channel(
-            self.mentee_channel)
-        mentor_channel: discord.TextChannel = await self.bot.fetch_channel(
-            self.mentor_channel)
+        mentor_channel: TextChannel = await self.bot.fetch_channel( self.mentor_channel)
         message: discord.Message = await mentor_channel.send(mentor_text)
         await message.add_reaction("🤚")
-        await mentee_channel.send(mentee_text)
+        await ctx.response.send_message(mentee_text)
+        return
 
-    async def on_reaction_add(self, reaction: discord.Reaction,
-                              user: discord.Member):
+    async def on_reaction_add(self, reaction: discord.Reaction,   user: discord.Member):
         """send a message to mentee when a mentor react on their request"""
-        mentee_channel: discord.TextChannel = await self.bot.fetch_channel(
+        mentee_channel: TextChannel = await self.bot.fetch_channel(
             self.mentee_channel)
-        mentor_channel: discord.TextChannel = await self.bot.fetch_channel(
+        mentor_channel: TextChannel = await self.bot.fetch_channel(
             self.mentor_channel)
         if reaction.emoji == "🤚":
             mentee_text = f"{user.mention} has accepted your request, they are on their way to help you! If they do not come in 10 mins you can try contact the on discord or send another request"

@@ -32,8 +32,7 @@ class Roles:
             await message.add_reaction(emoji)
         await ctx.response.send_message("role assignment send", ephemeral=True)
 
-    async def on_reaction_add(self, reaction: Reaction,
-                              user: Member):
+    async def on_reaction_add(self, reaction: Reaction, user: Member):
         """assign user roles based on their reaction to the role assignment message"""
         if reaction.message.author == user:
             return
@@ -43,8 +42,8 @@ class Roles:
             self.verification_channel)
         if reaction.message.channel.id == role_channel.id:
             server: Guild = await self.bot.fetch_guild(self.server)
-            role: Role = utils.get(
-                server.roles, name=ROLES_LIST[reaction.emoji])
+            role: Role = utils.get(server.roles,
+                                   name=ROLES_LIST[reaction.emoji])
             if ROLES_LIST[reaction.emoji] == "Hacker":
                 await user.add_roles(role)
             if ROLES_LIST[reaction.emoji] in ["Volunteer", "Mentor"]:

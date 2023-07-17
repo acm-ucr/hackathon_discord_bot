@@ -30,6 +30,7 @@ class Roles:
         message: discord.Message = await ctx.channel.send(text)
         for emoji in ROLES_LIST:
             await message.add_reaction(emoji)
+        await ctx.response.send_message("role assignment send", ephemeral=True)
 
     async def on_reaction_add(self, reaction: discord.Reaction,
                               user: discord.Member):

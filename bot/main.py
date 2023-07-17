@@ -36,6 +36,7 @@ async def send_role_assignment(ctx: discord.Interaction):
 
 
 @bot.tree.command(name="find_a_mentor")
+@has_permissions()
 @app_commands.describe(
     location=
     "let me know where is your physical locaiton so a mentor can come find you"

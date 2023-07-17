@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext.commands import Bot, has_permissions
-from discord import app_commands
+from discord import app_commands, Intents, Interaction, Reaction, Member, Client
 from .roles import Roles
 from .scheduler import Scheduler
 from .mentor import Mentor
@@ -20,7 +20,7 @@ VERIFICATION_CHANNEL_ID = os.getenv("DISCORD_VERIFICATION_CHANNEL_ID")
 MENTOR_CHANNEL_ID = os.getenv("DISCORD_MENTOR_CHANNEL_ID")
 ROLE_CHANNEL_ID = os.getenv("DISCORD_ROLE_CHANNEL_ID")
 
-bot: discord.Client = Bot(command_prefix="!", intents=discord.Intents.all())
+bot: Client = Bot(command_prefix="!", intents=Intents.all())
 
 roles = Roles(bot)
 scheduler = Scheduler(bot)
@@ -29,7 +29,7 @@ mentor = Mentor(bot)
 
 @bot.tree.command(name="roles")
 @has_permissions(administrator=True)
-async def send_role_assignment(ctx: discord.Interaction):
+async def send_role_assignment(ctx: Interaction):
     """Send Role Assignments"""
     async with ctx.channel.typing():
         await roles.send_role_assignment(ctx)
@@ -42,14 +42,14 @@ async def send_role_assignment(ctx: discord.Interaction):
 )
 @app_commands.describe(tech="let me know what tech stack are you using")
 @app_commands.describe(additional="do you have additional notes want to add")
-async def on_request_send(ctx: discord.Interaction, location: str, tech: str,
+async def on_request_send(ctx: Interaction, location: str, tech: str,
                           additional: str):
     """Mentor request"""
     await mentor.on_request_send(ctx, location, tech, additional)
 
 
 @bot.event
-async def on_reaction_add(reaction: discord.Reaction, user: discord.Member):
+async def on_reaction_add(reaction: Reaction, user: Member):
     """Add Reaction Based Role"""
     if reaction.message.author == user:
         return

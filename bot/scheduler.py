@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import requests
 import pytz
 from dateutil import parser
-import discord
+from discord import TextChannel
 
 
 class Scheduler:
@@ -60,7 +60,7 @@ class Scheduler:
         sleep_time: int = 3600
 
         for event in events:
-            channel: discord.TextChannel = await self.bot.fetch_channel(
+            channel: TextChannel = await self.bot.fetch_channel(
                 self.event_channel)
             if event["delta"] < 60:
                 await channel.send("EVENT HAPPENING NOW")

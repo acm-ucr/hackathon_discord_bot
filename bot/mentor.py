@@ -42,7 +42,7 @@ class Mentor:
         return
 
     async def on_reaction_add(self, reaction: Reaction, user: Member):
-        """send a message to mentee when a mentor react on their request"""
+        """Send a message to the mentee when a mentor reacts on their request"""
         if reaction.emoji == "🤚":
             mentee_text: str = f"""{user.mention} has accepted your request! They are on their way to help you!\n
             If they do not come within 10 minutes you can try to contact them on Discord or send another request!"""

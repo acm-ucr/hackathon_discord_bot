@@ -34,13 +34,10 @@ async def send_role_assignment(ctx: Interaction):
         await roles.send_role_assignment(ctx)
 
 
-@bot.tree.command(name="find_a_mentor")
-@app_commands.describe(
-    location=
-    "let me know where is your physical locaiton so a mentor can come find you"
-)
-@app_commands.describe(tech="let me know what tech stack are you using")
-@app_commands.describe(additional="do you have additional notes want to add")
+@bot.tree.command(name="mentor")
+@app_commands.describe(location="Where are you located?")
+@app_commands.describe(tech="What tech stack are you using?")
+@app_commands.describe(additional="Do you have additional notes to add?")
 async def on_request_send(ctx: Interaction, location: str, tech: str,
                           additional: str):
     """Mentor request"""

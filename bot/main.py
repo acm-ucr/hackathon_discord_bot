@@ -34,7 +34,6 @@ async def send_role_assignment(ctx: Interaction):
         await roles.send_role_assignment(ctx)
 
 
-
 @bot.tree.command(name="mentor")
 @app_commands.describe(location="Where are you located?")
 @app_commands.describe(tech="What tech stack are you using?")

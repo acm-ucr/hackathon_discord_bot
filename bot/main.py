@@ -27,9 +27,11 @@ scheduler: Scheduler = Scheduler(bot)
 mentor: Mentor = Mentor(bot)
 welcome: Welcome = Welcome(bot)
 
+
 @bot.event
 async def on_member_join(member):
     await welcome.send_welcome_message(member)
+
 
 @bot.tree.command(name="roles")
 @has_permissions(administrator=True)

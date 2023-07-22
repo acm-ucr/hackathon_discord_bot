@@ -1,4 +1,4 @@
-name: Rosehack Discord Bot
+name: UCR Hackathon Discord Bot
 
 on:
   pull_request:

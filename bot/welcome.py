@@ -1,4 +1,4 @@
-"""Welcome Class to Introduce New Members to Discord"""
+"""Welcome Class to Introduce New Members to Discord Server"""
 
 import os
 from dotenv import load_dotenv

@@ -1,3 +1,4 @@
 .env
 poetry.lock
 bot/__pycache__
+dist/

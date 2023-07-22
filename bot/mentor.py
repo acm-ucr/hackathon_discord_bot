@@ -9,7 +9,7 @@ load_dotenv()
 class Mentor:
     """Handle mentor requests and assignments"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Client):
         self.bot: Client = bot
         self.mentor_channel: str = os.getenv("DISCORD_MENTOR_CHANNEL_ID")
         self.mentee_channel: str = os.getenv("DISCORD_MENTEE_CHANNEL_ID")

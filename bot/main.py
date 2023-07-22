@@ -12,6 +12,7 @@ from discord import app_commands, Intents, Interaction, Reaction, Member, Client
 from .roles import Roles
 from .scheduler import Scheduler
 from .mentor import Mentor
+from .welcome import Welcome
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -21,10 +22,14 @@ ROLE_CHANNEL_ID = os.getenv("DISCORD_ROLE_CHANNEL_ID")
 
 bot: Client = Bot(command_prefix="!", intents=Intents.all())
 
-roles = Roles(bot)
-scheduler = Scheduler(bot)
-mentor = Mentor(bot)
+roles: Roles = Roles(bot)
+scheduler: Scheduler = Scheduler(bot)
+mentor: Mentor = Mentor(bot)
+welcome: Welcome = Welcome(bot)
 
+@bot.event
+async def on_member_join(member):
+    await welcome.send_welcome_message(member)
 
 @bot.tree.command(name="roles")
 @has_permissions(administrator=True)
@@ -60,9 +65,7 @@ async def on_reaction_add(reaction: Reaction, user: Member):
 async def on_ready():
     """Run when the bot initially loads"""
     try:
-        # sync =  await bot.tree.sync()
-        # print(sync)
-        print("bot is ready")
+        print("Bot is Ready!")
         while True:
             await scheduler.send_reminders()
     except RuntimeError as err:

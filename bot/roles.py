@@ -3,8 +3,6 @@ import os
 from dotenv import load_dotenv
 from discord import Interaction, Message, Reaction, Member, Role, Guild, TextChannel, Client, utils
 
-load_dotenv()
-
 ROLES_LIST = {"💻": "Hacker", "📞": "Volunteer", "🧠": "Mentor"}
 
 
@@ -15,7 +13,8 @@ class Roles:
     and mentors
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: Client):
+        load_dotenv()
         self.bot: Client = bot
         self.server: str = os.getenv("DISCORD_SERVER_ID")
         self.role_channel: str = os.getenv('DISCORD_ROLE_CHANNEL_ID')

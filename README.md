@@ -61,7 +61,7 @@ poetry run yapf -ir bot
 poetry run yapf -dr bot
 ```
 
-### Formatting Code via Pylint
+### Linting Code via Pylint
 ```bash
 poetry run pylint bot
 ```

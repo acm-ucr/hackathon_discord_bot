@@ -1,8 +1,7 @@
 [tool.poetry]
-name = "bot"
+name = "UCR Hackathon Discord Bot"
 version = "0.1.0"
-description = ""
-authors = ["Rosehack UCR <rosehackucr@gmail.com>"]
+description = "UCR Hackathon Discord Bot"
 readme = "README.md"
 
 [tool.poetry.dependencies]

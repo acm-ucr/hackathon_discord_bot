@@ -2,6 +2,7 @@
 name = "UCR Hackathon Discord Bot"
 version = "0.1.0"
 description = "UCR Hackathon Discord Bot"
+authors = []
 readme = "README.md"
 
 [tool.poetry.dependencies]

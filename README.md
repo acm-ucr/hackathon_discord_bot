@@ -1,10 +1,6 @@
 # UCR Hackathon Discord Bot
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-### Developers
-Lead Developer: [Divyank Shah](https://github.com/shahdivyank)<br/>
-Developers: [Menthy Wu](https://github.com/menthy-wu), [Sachin Chopra](https://github.com/SafeDuck)
-
 ## Python
 UCR Hackathon Discord Bot runs on Python Version 3.10 and higher. Please ensure you have Python installed. 
 

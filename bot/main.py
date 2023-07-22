@@ -30,6 +30,7 @@ welcome: Welcome = Welcome(bot)
 
 @bot.event
 async def on_member_join(member):
+    """Runs when a new member joins the Discord"""
     await welcome.send_welcome_message(member)
 
 

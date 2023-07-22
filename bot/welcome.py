@@ -7,6 +7,7 @@ from discord import Client, TextChannel, Member
 
 class Welcome:
     """Class to Handle Welcome Events"""
+
     def __init__(self, bot: Client):
         """Setups Welcome Class with required env variables"""
         load_dotenv()

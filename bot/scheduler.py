@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import requests
 import pytz
 from dateutil import parser
-from discord import TextChannel
+from discord import TextChannel, Client
 
 
 class Scheduler:
@@ -18,8 +18,8 @@ class Scheduler:
     and right as the event starts. Handles multiple parallel events. 
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Client):
+        self.bot: Client = bot
         load_dotenv()
         self.google_calendar_api_key = os.getenv('GOOGLE_CALENDAR_API_KEY')
         self.google_calendar_id = os.getenv('GOOGLE_CALENDAR_EMAIL')

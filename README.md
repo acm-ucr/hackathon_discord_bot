@@ -11,6 +11,8 @@ This project is built using [Poetry](https://python-poetry.org), a Python packag
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
+## Environment Variables
+
 The following environment variables are required and must be stored in an `.env` file:
 ```env
 DISCORD_BOT_TOKEN=
@@ -59,7 +61,7 @@ poetry run yapf -ir bot
 poetry run yapf -dr bot
 ```
 
-### Formatting Code via Pylint
+### Linting Code via Pylint
 ```bash
 poetry run pylint bot
 ```

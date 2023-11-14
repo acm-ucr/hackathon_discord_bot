@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord import Interaction, Message, Reaction, Member, Role, Guild, TextChannel, Client, utils
 
-ROLES_LIST = {"💻": "Hacker", "📞": "Volunteer", "🧠": "Mentor"}
+ROLES_LIST = {"🐟": "Hacker", "🐠": "Volunteer", "🦀": "Mentor"}
 
 
 class Roles:
@@ -23,13 +23,13 @@ class Roles:
 
     async def send_role_assignment(self, ctx: Interaction):
         """send the roll assinment message"""
-        text: str = "please react to the emoji to get your role\n"
+        text: str = "Please react with the desired role!\n"
         for emoji, role in ROLES_LIST.items():
             text += f"{role} : {emoji}\n"
         message: Message = await ctx.channel.send(text)
         for emoji in ROLES_LIST:
             await message.add_reaction(emoji)
-        await ctx.response.send_message("role assignment send", ephemeral=True)
+        await ctx.response.send_message("role assignment sent!", ephemeral=True)
 
     async def on_reaction_add(self, reaction: Reaction, user: Member):
         """assign user roles based on their reaction to the role assignment message"""

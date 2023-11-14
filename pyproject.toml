@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "UCR Hackathon Discord Bot"
+name = "bot"
 version = "0.1.0"
 description = "UCR Hackathon Discord Bot"
 authors = []

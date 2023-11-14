@@ -29,7 +29,8 @@ class Roles:
         message: Message = await ctx.channel.send(text)
         for emoji in ROLES_LIST:
             await message.add_reaction(emoji)
-        await ctx.response.send_message("role assignment sent!", ephemeral=True)
+        await ctx.response.send_message("role assignment sent!",
+                                        ephemeral=True)
 
     async def on_reaction_add(self, reaction: Reaction, user: Member):
         """assign user roles based on their reaction to the role assignment message"""

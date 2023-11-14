@@ -57,9 +57,12 @@ async def on_reaction_add(reaction: Reaction, user: Member):
     """Add Reaction Based Role"""
     if reaction.message.author == user:
         return
-    if str(reaction.message.channel.id) in [ROLE_CHANNEL_ID, VERIFICATION_CHANNEL_ID]:
+    if str(reaction.message.channel.id) in [
+            ROLE_CHANNEL_ID, VERIFICATION_CHANNEL_ID
+    ]:
         await roles.on_reaction_add(reaction, user)
-    elif str(reaction.message.channel.id) == MENTOR_CHANNEL_ID or isinstance(reaction.message.channel, DMChannel):
+    elif str(reaction.message.channel.id) == MENTOR_CHANNEL_ID or isinstance(
+            reaction.message.channel, DMChannel):
         await mentor.on_reaction_add(reaction, user)
 
 

@@ -14,8 +14,7 @@ class Welcome:
         self.bot: Client = bot
         self.welcome_channel: str = os.getenv("DISCORD_WELCOME_CHANNEL_ID")
         self.info_desk_channel: str = os.getenv("DISCORD_INFO_DESK_CHANNEL_ID")
-        self.role_channel: str = os.getenv(
-            "DISCORD_ROLE_CHANNEL_ID")
+        self.role_channel: str = os.getenv("DISCORD_ROLE_CHANNEL_ID")
         self.hackathon: str = os.getenv("HACKATHON_NAME")
 
     async def send_welcome_message(self, member: Member):

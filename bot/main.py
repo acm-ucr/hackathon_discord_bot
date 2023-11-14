@@ -8,7 +8,7 @@ import os.path
 import os
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, has_permissions
-from discord import app_commands, Intents, Interaction, Reaction, Member, Client
+from discord import app_commands, Intents, Interaction, Reaction, Member, Client, DMChannel
 from .roles import Roles
 from .scheduler import Scheduler
 from .mentor import Mentor
@@ -57,10 +57,12 @@ async def on_reaction_add(reaction: Reaction, user: Member):
     """Add Reaction Based Role"""
     if reaction.message.author == user:
         return
-    if str(reaction.message.channel.id) == VERIFICATION_CHANNEL_ID:
+    if str(reaction.message.channel.id) in [
+            ROLE_CHANNEL_ID, VERIFICATION_CHANNEL_ID
+    ]:
         await roles.on_reaction_add(reaction, user)
-    elif str(reaction.message.channel.id) == MENTOR_CHANNEL_ID or str(
-            reaction.message.channel.id) == ROLE_CHANNEL_ID:
+    elif str(reaction.message.channel.id) == MENTOR_CHANNEL_ID or isinstance(
+            reaction.message.channel, DMChannel):
         await mentor.on_reaction_add(reaction, user)
 
 
@@ -69,6 +71,7 @@ async def on_ready():
     """Run when the bot initially loads"""
     try:
         print("Bot is Ready!")
+        await bot.tree.sync()
         while True:
             await scheduler.send_reminders()
     except RuntimeError as err:

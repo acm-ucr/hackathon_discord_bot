@@ -66,7 +66,6 @@ class Scheduler:
                 await channel.send("EVENT HAPPENING NOW")
             elif event["delta"] < 600:
                 minutes: int = round(event["delta"] / 60)
-                print(minutes, type(minutes))
                 await channel.send(f"{minutes} MINUTE REMINDER")
             else:
                 sleep_time: int = event["delta"] - 600

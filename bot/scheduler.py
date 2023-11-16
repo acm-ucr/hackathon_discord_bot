@@ -64,11 +64,15 @@ class Scheduler:
                 self.event_channel)
             if event["delta"] < 60:
                 description = event['description'].split("\n")[1]
-                await channel.send(f"{event['summary']} happening RIGHT NOW in {event['location']}! {description}")
+                await channel.send(
+                    f"{event['summary']} happening RIGHT NOW in {event['location']}! {description}"
+                )
             elif event["delta"] < 600:
                 minutes: int = round(event["delta"] / 60)
                 description = event['description'].split("\n")[1]
-                await channel.send(f"{event['summary']} happening in {minutes} MINUTES in {event['location']}! {description}")
+                await channel.send(
+                    f"{event['summary']} happening in {minutes} MINUTES in {event['location']}! {description}"
+                )
             else:
                 sleep_time: int = event["delta"] - 600
                 break

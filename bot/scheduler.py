@@ -74,7 +74,7 @@ class Scheduler:
                     f"{event['summary']} happening in {minutes} MINUTES in {event['location']}! {description}"
                 )
             else:
-                sleep_time: int = event["delta"] - 600
+                sleep_time: int = event["delta"] - 540
                 break
 
         await asyncio.sleep(sleep_time)

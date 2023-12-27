@@ -3,14 +3,14 @@ import os
 from dotenv import load_dotenv
 from discord import Interaction, Message, Reaction, Member, Role, Guild, TextChannel, Client, utils
 
-ROLES_LIST = {"🐟": "Hacker", "🐠": "Volunteer", "🦀": "Mentor"}
+ROLES_LIST = {"🔥": "Hacker", "✨": "Volunteer", "🎊": "Mentor", "💯": "Judge"}
 
 
 class Roles:
     """
     Class to handle all role based management 
     including role assignment for hackers, volunteers, 
-    and mentors
+    mentors, and judges
     """
 
     def __init__(self, bot: Client):
@@ -22,7 +22,7 @@ class Roles:
             'DISCORD_VERIFICATION_CHANNEL_ID')
 
     async def send_role_assignment(self, ctx: Interaction):
-        """send the roll assinment message"""
+        """send the roll assignment message"""
         text: str = "Please react with the desired role!\n"
         for emoji, role in ROLES_LIST.items():
             text += f"{role} : {emoji}\n"
@@ -46,7 +46,7 @@ class Roles:
                                    name=ROLES_LIST[reaction.emoji])
             if ROLES_LIST[reaction.emoji] == "Hacker":
                 await user.add_roles(role)
-            if ROLES_LIST[reaction.emoji] in ["Volunteer", "Mentor"]:
+            if ROLES_LIST[reaction.emoji] in ["Volunteer", "Mentor", "Judge"]:
                 message: Message = await verification_channel.send(
                     f"""{user.mention} is requesting access 
                     to the following role: {reaction.emoji} {role.mention}""")

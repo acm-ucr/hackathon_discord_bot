@@ -67,14 +67,14 @@ class Scheduler:
                 await channel.send(
                     f"@everyone {event['summary']} happening RIGHT NOW in {event['location']}! {description}"
                 )
-            elif event["delta"] < 600:
+            elif event["delta"] < 660:
                 minutes: int = round(event["delta"] / 60)
                 description = event['description'].split("\n")[1]
                 await channel.send(
                     f"@everyone {event['summary']} happening in {minutes} MINUTES in {event['location']}! {description}"
                 )
+                sleep_time: int = event["delta"] - 60 
             else:
-                sleep_time: int = event["delta"] - 540
+                sleep_time: int = event["delta"] - 600
                 break
-
         await asyncio.sleep(sleep_time)

@@ -73,7 +73,7 @@ class Scheduler:
                 await channel.send(
                     f"@everyone {event['summary']} happening in {minutes} MINUTES in {event['location']}! {description}"
                 )
-                sleep_time: int = event["delta"] - 60 
+                sleep_time: int = event["delta"] - 60
             else:
                 sleep_time: int = event["delta"] - 600
                 break
